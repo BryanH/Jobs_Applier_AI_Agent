@@ -1,0 +1,7 @@
+# This file contains API connections secrets.
+#
+# You will need to copy it to `.env`
+# in the project root and edit it.
+# DO NOT check `.env` into source control
+
+LLM_API_KEY="<api key here>"

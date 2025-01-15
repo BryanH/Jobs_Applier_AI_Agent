@@ -161,5 +161,6 @@ venv.bak/
 # Mono Auto Generated Files
 mono_crash.*
 
-
+# Configuration/api keys/etc
 **/secrets.yaml
+.env

@@ -109,24 +109,38 @@ In the digital age, the job search landscape has undergone a dramatic transforma
 
 ## Configuration
 
-### 1. secrets.yaml
+### 1. Environment variablesr
 
-This file doesn't exist by default. Copy the one from `./data_folder_example/secrets.yaml` into `./data_folder/` and edit it.
-**Never share or commit this file to version control.**
+The API key is stored in the `.env` in the project root. Copy `env_example` to `.env` and edit the file, adding your personal keys.
 
-- `llm_api_key: [Your OpenAI or Ollama API key or Gemini API key]`
+It is expected each different developer will have their own .env, and if this application is run on a server (cloud), the server configuration will include the installation API keys.
+
+**Never share or commit `.env` file to version control.**
+
+- `LLM_API_KEY: [Your OpenAI or Ollama API key or Gemini API key]`
   - Replace with your OpenAI API key for GPT integration
-    - To obtain an API key, follow the tutorial at: <https://medium.com/@lorenzozar/how-to-get-your-own-openai-api-key-f4d44e60c327>
-    - Note: You need to add credit to your OpenAI account to use the API. You can add credit by visiting the [OpenAI billing dashboard](https://platform.openai.com/account/billing).
-    - According to the [OpenAI community](https://community.openai.com/t/usage-tier-free-to-tier-1/919150) and our users' reports, right after setting up the OpenAI account and purchasing the required credits, users still have a `Free` account type. This prevents them from having unlimited access to OpenAI models and allows only 200 requests per day. This might cause runtime errors such as:
+
+#### OpenAPI
+
+To obtain an API key, follow the tutorial at: <https://medium.com/@lorenzozar/how-to-get-your-own-openai-api-key-f4d44e60c327>
+
+Note: You need to add credit to your OpenAI account to use the API. You can add credit by visiting the [OpenAI billing dashboard](https://platform.openai.com/account/billing).
+
+According to the [OpenAI community](https://community.openai.com/t/usage-tier-free-to-tier-1/919150) and our users' reports, right after setting up the OpenAI account and purchasing the required credits, users still have a `Free` account type. This prevents them from having unlimited access to OpenAI models and allows only 200 requests per day.r
+
+This might cause runtime errors such as:
       `Error code: 429 - {'error': {'message': 'You exceeded your current quota, please check your plan and billing details. ...}}`
       `{'error': {'message': 'Rate limit reached for gpt-4o-mini in organization <org> on requests per day (RPD): Limit 200, Used 200, Requested 1.}}`
       OpenAI will update your account automatically, but it might take some time, ranging from a couple of hours to a few days.
-      You can find more about your organization's limits on the [official page](https://platform.openai.com/settings/organization/limits).
-  - For obtaining Gemini API key visit [Google AI for Devs](https://ai.google.dev/gemini-api/docs/api-key)
+
+You can find more about your organization's limits on the [official page](https://platform.openai.com/settings/organization/limits).
+
+#### Gemini API
+
+- To  obtain a Gemini API key visit [Google AI for Devs](https://ai.google.dev/gemini-api/docs/api-key).
 
 
-#### 1.1 config.py - Customize LLM model endpoint
+### 1.1 config.py - Customize LLM model endpoint
 
 - `LLM_MODEL_TYPE`:
   - Choose the model type, supported: openai / ollama / claude / gemini
