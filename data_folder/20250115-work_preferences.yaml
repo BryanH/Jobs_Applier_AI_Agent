@@ -1,0 +1,45 @@
+remote: true
+hybrid: true
+onsite: true
+
+experience_level:
+  internship: false
+  entry: false
+  associate: false
+  mid_senior_level: true
+  director: true
+  executive: false
+
+job_types:
+  full_time: true
+  contract: true
+  part_time: false
+  temporary: false
+  internship: false
+  other: false
+  volunteer: false
+
+date:
+  all_time: false
+  month: false
+  week: false
+  24_hours: true
+
+positions:
+  - Project Manager
+  - IT Project Manager
+
+locations:
+  - Houston, TX
+
+apply_once_at_company: true
+
+distance: 20
+
+# company_blacklist:
+#  -
+
+# title_blacklist:
+#  -
+# location_blacklist:
+#  -

@@ -3,6 +3,7 @@ import sys
 from pathlib import Path
 import traceback
 from typing import List, Optional, Tuple, Dict
+from dotenv import load_dotenv
 
 import click
 import inquirer
@@ -19,7 +20,6 @@ from src.logging import logger
 from src.utils.chrome_utils import init_browser
 from src.utils.constants import (
     PLAIN_TEXT_RESUME_YAML,
-    SECRETS_YAML,
     WORK_PREFERENCES_YAML,
 )
 # from ai_hawk.bot_facade import AIHawkBotFacade
@@ -33,7 +33,7 @@ class ConfigError(Exception):
 
 
 class ConfigValidator:
-    """Validates configuration and secrets YAML files."""
+    """Validates configuration YAML files."""
 
     EMAIL_REGEX = re.compile(r"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$")
     REQUIRED_CONFIG_KEYS = {
@@ -167,7 +167,7 @@ class ConfigValidator:
 
     @staticmethod
     def validate_secrets(secrets_yaml_path: Path) -> str:
-        """Validate the secrets YAML file and retrieve the LLM API key."""
+        """Validate the secrets  file and retrieve the LLM API key."""
         secrets = ConfigValidator.load_yaml(secrets_yaml_path)
         mandatory_secrets = ["llm_api_key"]
 
@@ -184,7 +184,7 @@ class ConfigValidator:
 class FileManager:
     """Handles file system operations and validations."""
 
-    REQUIRED_FILES = [SECRETS_YAML, WORK_PREFERENCES_YAML, PLAIN_TEXT_RESUME_YAML]
+    REQUIRED_FILES = [WORK_PREFERENCES_YAML, PLAIN_TEXT_RESUME_YAML]
 
     @staticmethod
     def validate_data_folder(app_data_folder: Path) -> Tuple[Path, Path, Path, Path]:
@@ -200,7 +200,6 @@ class FileManager:
         output_folder.mkdir(exist_ok=True)
 
         return (
-            app_data_folder / SECRETS_YAML,
             app_data_folder / WORK_PREFERENCES_YAML,
             app_data_folder / PLAIN_TEXT_RESUME_YAML,
             output_folder,
@@ -262,7 +261,7 @@ def create_cover_letter(parameters: dict, llm_api_key: str):
         resume_object = Resume(plain_text_resume)
         driver = init_browser()
         resume_generator.set_resume_object(resume_object)
-        resume_facade = ResumeFacade(            
+        resume_facade = ResumeFacade(
             api_key=llm_api_key,
             style_manager=style_manager,
             resume_generator=resume_generator,
@@ -271,7 +270,7 @@ def create_cover_letter(parameters: dict, llm_api_key: str):
         )
         resume_facade.set_driver(driver)
         resume_facade.link_to_job(job_url)
-        result_base64, suggested_name = resume_facade.create_cover_letter()         
+        result_base64, suggested_name = resume_facade.create_cover_letter()
 
         # Decodifica Base64 in dati binari
         try:
@@ -290,7 +289,7 @@ def create_cover_letter(parameters: dict, llm_api_key: str):
         except IOError as e:
             logger.error("Error creating output directory: %s", e)
             raise
-        
+
         output_path = output_dir / "cover_letter_tailored.pdf"
         try:
             with open(output_path, "wb") as file:
@@ -347,7 +346,7 @@ def create_resume_pdf_job_tailored(parameters: dict, llm_api_key: str):
         resume_object = Resume(plain_text_resume)
         driver = init_browser()
         resume_generator.set_resume_object(resume_object)
-        resume_facade = ResumeFacade(            
+        resume_facade = ResumeFacade(
             api_key=llm_api_key,
             style_manager=style_manager,
             resume_generator=resume_generator,
@@ -356,7 +355,7 @@ def create_resume_pdf_job_tailored(parameters: dict, llm_api_key: str):
         )
         resume_facade.set_driver(driver)
         resume_facade.link_to_job(job_url)
-        result_base64, suggested_name = resume_facade.create_resume_pdf_job_tailored()         
+        result_base64, suggested_name = resume_facade.create_resume_pdf_job_tailored()
 
         # Decodifica Base64 in dati binari
         try:
@@ -375,7 +374,7 @@ def create_resume_pdf_job_tailored(parameters: dict, llm_api_key: str):
         except IOError as e:
             logger.error("Error creating output directory: %s", e)
             raise
-        
+
         output_path = output_dir / "resume_tailored.pdf"
         try:
             with open(output_path, "wb") as file:
@@ -467,7 +466,7 @@ def create_resume_pdf(parameters: dict, llm_api_key: str):
         logger.exception(f"An error occurred while creating the CV: {e}")
         raise
 
-        
+
 def handle_inquiries(selected_actions: List[str], parameters: dict, llm_api_key: str):
     """
     Decide which function to call based on the selected user actions.
@@ -481,11 +480,11 @@ def handle_inquiries(selected_actions: List[str], parameters: dict, llm_api_key:
             if "Generate Resume" == selected_actions:
                 logger.info("Crafting a standout professional resume...")
                 create_resume_pdf(parameters, llm_api_key)
-                
+
             if "Generate Resume Tailored for Job Description" == selected_actions:
                 logger.info("Customizing your resume to enhance your job application...")
                 create_resume_pdf_job_tailored(parameters, llm_api_key)
-                
+
             if "Generate Tailored Cover Letter for Job Description" == selected_actions:
                 logger.info("Designing a personalized cover letter to enhance your job application...")
                 create_cover_letter(parameters, llm_api_key)
@@ -526,14 +525,22 @@ def prompt_user_action() -> str:
 
 def main():
     """Main entry point for the AIHawk Job Application Bot."""
+
+    load_dotenv()  # get environment variables
+
     try:
         # Define and validate the data folder
         data_folder = Path("data_folder")
-        secrets_file, config_file, plain_text_resume_file, output_folder = FileManager.validate_data_folder(data_folder)
+        config_file, plain_text_resume_file, output_folder = FileManager.validate_data_folder(data_folder)
 
         # Validate configuration and secrets
         config = ConfigValidator.validate_config(config_file)
-        llm_api_key = ConfigValidator.validate_secrets(secrets_file)
+        #llm_api_key = os.environ()
+
+        env_var = os.environ
+
+        print("User's environment:")
+        pprint.pprint(dict(env_var), width=1)
 
         # Prepare parameters
         config["uploads"] = FileManager.get_uploads(plain_text_resume_file)

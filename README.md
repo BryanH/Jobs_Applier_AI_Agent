@@ -441,7 +441,6 @@ The `data_folder_example` folder contains a working example of how the files nec
 
 Inside this folder, you'll find example versions of the key files:
 
-- `secrets.yaml`
 - `plain_text_resume.yaml`
 
 These files are already populated with fictitious but realistic data. They show you the correct format and type of information to enter in each file.
@@ -458,7 +457,6 @@ Using this folder as a guide can be particularly helpful for:
 
 1. **Data Folder:**
    Ensure that your data_folder contains the following files:
-   - `secrets.yaml`
    - `plain_text_resume.yaml`
 
 2. **Output Folder:**

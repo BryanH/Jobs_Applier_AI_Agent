@@ -153,6 +153,8 @@ venv.bak/
 *.VC.db
 
 # User-specific files
+**/plain_text_resume.yaml
+**/work_preferences.yaml
 *.suo
 *.user
 *.userosscache
