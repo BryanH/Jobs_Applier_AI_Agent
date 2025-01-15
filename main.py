@@ -1,5 +1,7 @@
 import base64
 import sys
+import os
+import pprint
 from pathlib import Path
 import traceback
 from typing import List, Optional, Tuple, Dict
@@ -165,20 +167,19 @@ class ConfigValidator:
             if parameters[blacklist] is None:
                 parameters[blacklist] = []
 
-    @staticmethod
-    def validate_secrets(secrets_yaml_path: Path) -> str:
-        """Validate the secrets  file and retrieve the LLM API key."""
-        secrets = ConfigValidator.load_yaml(secrets_yaml_path)
-        mandatory_secrets = ["llm_api_key"]
+    # @staticmethod
+    # def validate_secrets(secrets_yaml_path: Path) -> str:
+    #     """Validate the secrets  file and retrieve the LLM API key."""
+    #     mandatory_secrets = ["llm_api_key"]
 
-        for secret in mandatory_secrets:
-            if secret not in secrets:
-                raise ConfigError(f"Missing secret '{secret}' in {secrets_yaml_path}")
+    #     for secret in mandatory_secrets:
+    #         if secret not in secrets:
+    #             raise ConfigError(f"Missing secret '{secret}' in environment")
 
-            if not secrets[secret]:
-                raise ConfigError(f"Secret '{secret}' cannot be empty in {secrets_yaml_path}")
+    #         if not secrets[secret]:
+    #             raise ConfigError(f"Secret '{secret}' cannot be empty in environment")
 
-        return secrets["llm_api_key"]
+    #     return secrets["llm_api_key"]
 
 
 class FileManager:
@@ -533,14 +534,16 @@ def main():
         data_folder = Path("data_folder")
         config_file, plain_text_resume_file, output_folder = FileManager.validate_data_folder(data_folder)
 
-        # Validate configuration and secrets
+        # Validate configuration and load secret
         config = ConfigValidator.validate_config(config_file)
-        #llm_api_key = os.environ()
+        llm_api_key = os.environ['LLM_API_KEY']
 
+        # Show all environments ##########################
         env_var = os.environ
 
         print("User's environment:")
         pprint.pprint(dict(env_var), width=1)
+        ##################################################
 
         # Prepare parameters
         config["uploads"] = FileManager.get_uploads(plain_text_resume_file)
