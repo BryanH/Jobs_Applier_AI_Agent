@@ -1,7 +1,10 @@
+#!/usr/bin/env python3
+"""Main program entry point"""
 import base64
 import sys
 import os
 import pprint
+import re
 from pathlib import Path
 import traceback
 from typing import List, Optional, Tuple, Dict
@@ -14,7 +17,6 @@ from selenium import webdriver
 from selenium.common.exceptions import WebDriverException
 from selenium.webdriver.chrome.service import Service as ChromeService
 from webdriver_manager.chrome import ChromeDriverManager
-import re
 from src.libs.resume_and_cover_builder import ResumeFacade, ResumeGenerator, StyleManager
 from src.resume_schemas.job_application_profile import JobApplicationProfile
 from src.resume_schemas.resume import Resume
@@ -79,7 +81,7 @@ class ConfigValidator:
     def load_yaml(yaml_path: Path) -> dict:
         """Load and parse a YAML file."""
         try:
-            with open(yaml_path, "r") as stream:
+            with open(yaml_path, "r", encoding="utf-8") as stream:
                 return yaml.safe_load(stream)
         except yaml.YAMLError as exc:
             raise ConfigError(f"Error reading YAML file {yaml_path}: {exc}")
@@ -98,11 +100,13 @@ class ConfigValidator:
                 else:
                     raise ConfigError(f"Missing required key '{key}' in {config_yaml_path}")
             elif not isinstance(parameters[key], expected_type):
-                if key in ["company_blacklist", "title_blacklist", "location_blacklist"] and parameters[key] is None:
+                if (key in ["company_blacklist", "title_blacklist", "location_blacklist"]
+                   and parameters[key] is None):
                     parameters[key] = []
                 else:
                     raise ConfigError(
-                        f"Invalid type for key '{key}' in {config_yaml_path}. Expected {expected_type.__name__}."
+                        (f"Invalid type for key '{key}' in {config_yaml_path}."
+                         f" Expected {expected_type.__name__}.")
                     )
         cls._validate_experience_levels(parameters["experience_level"], config_yaml_path)
         cls._validate_job_types(parameters["job_types"], config_yaml_path)
@@ -153,7 +157,9 @@ class ConfigValidator:
         """Validate the distance value."""
         if distance not in cls.APPROVED_DISTANCES:
             raise ConfigError(
-                f"Invalid distance value '{distance}' in {config_path}. Must be one of: {cls.APPROVED_DISTANCES}"
+                (f"Invalid distance value '{distance}' "
+                 f"in {config_path}. Must be one of: "
+                 f"{cls.APPROVED_DISTANCES}")
             )
 
     @classmethod
@@ -193,7 +199,8 @@ class FileManager:
         if not app_data_folder.is_dir():
             raise FileNotFoundError(f"Data folder not found: {app_data_folder}")
 
-        missing_files = [file for file in FileManager.REQUIRED_FILES if not (app_data_folder / file).exists()]
+        missing_files = [file for file in FileManager.REQUIRED_FILES
+                         if not (app_data_folder / file).exists()]
         if missing_files:
             raise FileNotFoundError(f"Missing files in data folder: {', '.join(missing_files)}")
 
@@ -340,7 +347,8 @@ def create_resume_pdf_job_tailored(parameters: dict, llm_api_key: str):
                         break
             else:
                 logger.warning("No style selected. Proceeding with default style.")
-        questions = [inquirer.Text('job_url', message="Please enter the URL of the job description:")]
+        questions = [inquirer.Text('job_url',
+                     message="Please enter the URL of the job description:")]
         answers = inquirer.prompt(questions)
         job_url = answers.get('job_url')
         resume_generator = ResumeGenerator()
@@ -487,7 +495,8 @@ def handle_inquiries(selected_actions: List[str], parameters: dict, llm_api_key:
                 create_resume_pdf_job_tailored(parameters, llm_api_key)
 
             if "Generate Tailored Cover Letter for Job Description" == selected_actions:
-                logger.info("Designing a personalized cover letter to enhance your job application...")
+                logger.info("Designing a personalized cover letter "
+                            "to enhance your job application")
                 create_cover_letter(parameters, llm_api_key)
 
         else:
@@ -532,7 +541,9 @@ def main():
     try:
         # Define and validate the data folder
         data_folder = Path("data_folder")
-        config_file, plain_text_resume_file, output_folder = FileManager.validate_data_folder(data_folder)
+        (config_file,
+        plain_text_resume_file,
+        output_folder) = FileManager.validate_data_folder(data_folder)
 
         # Validate configuration and load secret
         config = ConfigValidator.validate_config(config_file)
