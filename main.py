@@ -390,33 +390,7 @@ def create_resume_pdf(parameters: dict, llm_api_key: str):
         # Load the plain text resume
         with open(parameters["uploads"]["plainTextResume"], "r", encoding="utf-8") as file:
             plain_text_resume = file.read()
-
-        # Initialize StyleManager
-        style_manager = StyleManager()
-        available_styles = style_manager.get_styles()
-
-        if not available_styles:
-            logger.warning("No styles available. Proceeding without style selection.")
-        else:
-            # Present style choices to the user
-            choices = style_manager.format_choices(available_styles)
-            questions = [
-                inquirer.List(
-                    "style",
-                    message="Select a style for the resume:",
-                    choices=choices,
-                )
-            ]
-            style_answer = inquirer.prompt(questions)
-            if style_answer and "style" in style_answer:
-                selected_choice = style_answer["style"]
-                for style_name, (file_name, author_link) in available_styles.items():
-                    if selected_choice.startswith(style_name):
-                        style_manager.set_selected_style(style_name)
-                        logger.info(f"Selected style: {style_name}")
-                        break
-            else:
-                logger.warning("No style selected. Proceeding with default style.")
+        style_manager = get_styles()
 
         # Initialize the Resume Generator
         resume_generator = ResumeGenerator()
