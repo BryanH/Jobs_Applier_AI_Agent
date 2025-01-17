@@ -188,7 +188,7 @@ class FileManager:
     REQUIRED_FILES = [WORK_PREFERENCES_YAML, PLAIN_TEXT_RESUME_YAML]
 
     @staticmethod
-    def validate_data_folder(app_data_folder: Path) -> Tuple[Path, Path, Path, Path]:
+    def validate_data_folder(app_data_folder: Path) -> Tuple[Path, Path, Path]:
         """Validate the existence of the data folder and required files."""
         if not app_data_folder.is_dir():
             raise FileNotFoundError(f"Data folder not found: {app_data_folder}")
