@@ -31,6 +31,9 @@ from src.utils.constants import (
 # from ai_hawk.llm.llm_manager import GPTAnswerer
 
 NO_STYLE_MSG = "No styles available. Proceeding without style selection."
+QUESTIONS = [
+            inquirer.Text('job_url', message="Please enter the URL of the job description:")
+        ]
 
 class ConfigError(Exception):
     """Custom exception for configuration-related errors."""
@@ -247,7 +250,7 @@ def get_styles():
         style_answer = inquirer.prompt(questions)
         if style_answer and "style" in style_answer:
             selected_choice = style_answer["style"]
-            for style_name, (file_name, author_link) in available_styles.items():
+            for style_name, *_ in available_styles.items():
                 if selected_choice.startswith(style_name):
                     style_manager.set_selected_style(style_name)
                     logger.info(f"Selected style: {style_name}")
@@ -255,6 +258,12 @@ def get_styles():
         else:
             logger.warning(NO_STYLE_MSG)
     return style_manager
+
+def get_job_url() -> str:
+    """Prompt for and return the url of the job"""
+    answers = inquirer.prompt(QUESTIONS)
+    job_url = answers.get('job_url')
+    return job_url
 
 
 def create_cover_letter(parameters: dict, llm_api_key: str):
@@ -268,11 +277,6 @@ def create_cover_letter(parameters: dict, llm_api_key: str):
         with open(parameters["uploads"]["plainTextResume"], "r", encoding="utf-8") as file:
             plain_text_resume = file.read()
         style_manager = get_styles()
-        questions = [
-    inquirer.Text('job_url', message="Please enter the URL of the job description:")
-        ]
-        answers = inquirer.prompt(questions)
-        job_url = answers.get('job_url')
         resume_generator = ResumeGenerator()
         resume_object = Resume(plain_text_resume)
         driver = init_browser()
@@ -285,7 +289,7 @@ def create_cover_letter(parameters: dict, llm_api_key: str):
             output_path=Path("data_folder/output"),
         )
         resume_facade.set_driver(driver)
-        resume_facade.link_to_job(job_url)
+        resume_facade.link_to_job(get_job_url())
         result_base64, suggested_name = resume_facade.create_cover_letter()
 
         # Decodifica Base64 in dati binari
@@ -330,10 +334,6 @@ def create_resume_pdf_job_tailored(parameters: dict, llm_api_key: str):
         with open(parameters["uploads"]["plainTextResume"], "r", encoding="utf-8") as file:
             plain_text_resume = file.read()
         style_manager = get_styles()
-        questions = [inquirer.Text('job_url',
-                     message="Please enter the URL of the job description:")]
-        answers = inquirer.prompt(questions)
-        job_url = answers.get('job_url')
         resume_generator = ResumeGenerator()
         resume_object = Resume(plain_text_resume)
         driver = init_browser()
@@ -346,7 +346,7 @@ def create_resume_pdf_job_tailored(parameters: dict, llm_api_key: str):
             output_path=Path("data_folder/output"),
         )
         resume_facade.set_driver(driver)
-        resume_facade.link_to_job(job_url)
+        resume_facade.link_to_job(get_job_url())
         result_base64, suggested_name = resume_facade.create_resume_pdf_job_tailored()
 
         # Decodifica Base64 in dati binari
