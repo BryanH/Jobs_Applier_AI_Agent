@@ -22,7 +22,7 @@ As AIHawk is focusing on their proprietary product - solving problems in hiring 
 
 We are looking to expand our FOSS maintainers team! If you are from a non-technical background, you can be part of the project management team, triaging issues, and shaping the project. If you are a technical person, you can join in doing code reviews, participating in releases, and building a better version of this product.
 
-reach out to [surapuramakhil](https://github.com/surapuramakhil) on Discord. [Special thanks](#special-thanks) 
+reach out to [surapuramakhil](https://github.com/surapuramakhil) on Discord. [Special thanks](#special-thanks)
 
 Auto_Jobs_Applier_AIHawk is continuously evolving, and your feedback, suggestions, and contributions are highly valued. Feel free to open issues, suggest enhancements, or submit pull requests to help improve the project. Let's work together to make Auto_Jobs_Applier_AIHawk a powerful tool for job seekers worldwide.
 
@@ -61,7 +61,7 @@ In the digital age, the job search landscape has undergone a dramatic transforma
   - 3.11.9(64b)
   - 3.12.5(64b)
 
-### Option 1: Using Python Virtual Environment 
+### Option 1: Using Python Virtual Environment
 
 1. **Download and Install Python:**
 
@@ -78,7 +78,7 @@ In the digital age, the job search landscape has undergone a dramatic transforma
 
    ```bash
    git clone https://github.com/feder-cr/Jobs_Applier_AI_Agent.git
-   
+
    cd Jobs_Applier_AI_Agent
    ```
 
@@ -117,10 +117,10 @@ This file contains sensitive information. Never share or commit this file to ver
   - Replace with your OpenAI API key for GPT integration
   - To obtain an API key, follow the tutorial at: <https://medium.com/@lorenzozar/how-to-get-your-own-openai-api-key-f4d44e60c327>
   - Note: You need to add credit to your OpenAI account to use the API. You can add credit by visiting the [OpenAI billing dashboard](https://platform.openai.com/account/billing).
-  - According to the [OpenAI community](https://community.openai.com/t/usage-tier-free-to-tier-1/919150) and our users' reports, right after setting up the OpenAI account and purchasing the required credits, users still have a `Free` account type. This prevents them from having unlimited access to OpenAI models and allows only 200 requests per day. This might cause runtime errors such as:  
-    `Error code: 429 - {'error': {'message': 'You exceeded your current quota, please check your plan and billing details. ...}}`  
-    `{'error': {'message': 'Rate limit reached for gpt-4o-mini in organization <org> on requests per day (RPD): Limit 200, Used 200, Requested 1.}}`  
-    OpenAI will update your account automatically, but it might take some time, ranging from a couple of hours to a few days.  
+  - According to the [OpenAI community](https://community.openai.com/t/usage-tier-free-to-tier-1/919150) and our users' reports, right after setting up the OpenAI account and purchasing the required credits, users still have a `Free` account type. This prevents them from having unlimited access to OpenAI models and allows only 200 requests per day. This might cause runtime errors such as:
+    `Error code: 429 - {'error': {'message': 'You exceeded your current quota, please check your plan and billing details. ...}}`
+    `{'error': {'message': 'Rate limit reached for gpt-4o-mini in organization <org> on requests per day (RPD): Limit 200, Used 200, Requested 1.}}`
+    OpenAI will update your account automatically, but it might take some time, ranging from a couple of hours to a few days.
     You can find more about your organization's limits on the [official page](https://platform.openai.com/settings/organization/limits).
   - For obtaining Gemini API key visit [Google AI for Devs](https://ai.google.dev/gemini-api/docs/api-key)
 
@@ -142,7 +142,7 @@ This file contains sensitive information. Never share or commit this file to ver
     - claude: <https://api.anthropic.com/v1>
     - gemini: <https://aistudio.google.com/app/apikey>
 - Note: To run local Ollama, follow the guidelines here: [Guide to Ollama deployment](https://github.com/ollama/ollama). The `LLM_API_URL` field is only required for Ollama.
-  
+
 ### 2. plain_text_resume.yaml
 
 This file contains your resume information in a structured format. Fill it out with your personal details, education, work experience, and skills. This information is used to auto-fill application forms and generate customized resumes.
@@ -273,7 +273,7 @@ Each section has specific fields to fill out:
 
 - `certifications:`
   - Include any professional certifications you have earned.
-    - name: "PMP"  
+    - name: "PMP"
       description: "Certification for project management professionals, issued by the Project Management Institute (PMI)"
 
   - Example:
@@ -520,24 +520,24 @@ For further assistance, please create an issue on the [GitHub repository](https:
   - Follow the instructions below to ensure proper configuration of **AIHawk** with **Ollama** and **Gemini**.
   - Written by Rushi, [Linkedin](https://www.linkedin.com/in/rushichaganti/), support him by following.
   - Step 1: If your system meets the requirements for Ollama, install it from the following URL https://ollama.com/download.
-  - Step 2: Verify Ollama is Running 
+  - Step 2: Verify Ollama is Running
     - Open a browser and navigate to localhost:11434  to confirm Ollama is running
    - If Ollama runs correctly, you'll see confirmation in the browser.
    - Step 3: Edit Configuration in VS Code
      - Edit the file config.py located at Auto_Jobs_Applier_AIHawk\config.py with the following
-     - llm_model_type: ollama 
-     - llm_model: 'llama3.2:1b' 
+     - llm_model_type: ollama
+     - llm_model: 'llama3.2:1b'
      - llm_api_url: 'http://127.0.0.1:11434/'
-     
+
 - Gemini Setup
   - Follow the instructions below to ensure proper configuration of **AIHawk** with **Ollama** and **Gemini**.
   - Written by Rushi, [Linkedin](https://www.linkedin.com/in/rushichaganti/), support him by following.
   - Step 1: Get your free API key at https://aistudio.google.com/app/apikey.
-  - Step 2: Verify Ollama is Running 
+  - Step 2: Verify Ollama is Running
     - Replace llm_api_key with your newly created API key on the file secrets.yaml located at Auto_Jobs_Applier_AIHawk\data_folder\secrets.yaml
   - Step 3: Edit Configuration in VS Code
-    - Edit the file config.py located at Auto_Jobs_Applier_AIHawk\config.py with the following 
-    - llm_model_type: gemini 
+    - Edit the file config.py located at Auto_Jobs_Applier_AIHawk\config.py with the following
+    - llm_model_type: gemini
     - llm_model: 'gemini-pro'
 
 - Editing YAML Files
@@ -564,10 +564,10 @@ For further assistance, please create an issue on the [GitHub repository](https:
 
 
 - If you encounter any issues, you can open an issue on [GitHub](https://github.com/feder-cr/Auto_Jobs_Applier_AIHawk/issues).
-  Please add valuable details to the subject and to the description. If you need a new feature then please reflect this.  
+  Please add valuable details to the subject and to the description. If you need a new feature then please reflect this.
   I'll be more than happy to assist you!
 
-- Note for Contributors: If you would like to submit a Pull Request (PR), please target the `release` branch instead of `main`. The `release` branch is used for testing new code changes and will be periodically merged into `main` after validation. This approach ensures that only tested features are included in the main branch.
+- For Contributors, Pull Requests are always welcome!
 
 ## Conclusion
 
@@ -594,8 +594,8 @@ This project is licensed under the AGPL License. Documentation is licensed under
 
 The AGPL License requires that any derivative work must also be open source and distributed under the same license.
 
-The CC BY License permits others to distribute, remix, adapt, and build upon your work, even for commercial purposes, as long as they credit you for the original creation. 
- 
+The CC BY License permits others to distribute, remix, adapt, and build upon your work, even for commercial purposes, as long as they credit you for the original creation.
+
 
 ## Disclaimer
 
