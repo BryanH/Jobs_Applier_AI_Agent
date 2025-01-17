@@ -30,7 +30,7 @@ from src.utils.constants import (
 # from ai_hawk.job_manager import AIHawkJobManager
 # from ai_hawk.llm.llm_manager import GPTAnswerer
 
-NO_STYLE_MSG = f"No styles available. Proceeding without style selection."
+NO_STYLE_MSG = "No styles available. Proceeding without style selection."
 
 class ConfigError(Exception):
     """Custom exception for configuration-related errors."""
