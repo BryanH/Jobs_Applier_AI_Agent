@@ -30,6 +30,7 @@ from src.utils.constants import (
 # from ai_hawk.job_manager import AIHawkJobManager
 # from ai_hawk.llm.llm_manager import GPTAnswerer
 
+NO_STYLE_MSG = f"No styles available. Proceeding without style selection."
 
 class ConfigError(Exception):
     """Custom exception for configuration-related errors."""
@@ -223,6 +224,39 @@ class FileManager:
         return uploads
 
 
+def get_styles():
+    """
+    User selects style or default
+    Returns style to use
+    """
+    style_manager = StyleManager()
+    available_styles = style_manager.get_styles()
+
+    if not available_styles:
+        logger.warning(NO_STYLE_MSG)
+    else:
+        # Present style choices to the user
+        choices = style_manager.format_choices(available_styles)
+        questions = [
+            inquirer.List(
+                "style",
+                message="Select a style for the resume:",
+                choices=choices,
+            )
+        ]
+        style_answer = inquirer.prompt(questions)
+        if style_answer and "style" in style_answer:
+            selected_choice = style_answer["style"]
+            for style_name, (file_name, author_link) in available_styles.items():
+                if selected_choice.startswith(style_name):
+                    style_manager.set_selected_style(style_name)
+                    logger.info(f"Selected style: {style_name}")
+                    break
+        else:
+            logger.warning(NO_STYLE_MSG)
+    return style_manager
+
+
 def create_cover_letter(parameters: dict, llm_api_key: str):
     """
     Logic to create a CV.
@@ -233,32 +267,7 @@ def create_cover_letter(parameters: dict, llm_api_key: str):
         # Carica il resume in testo semplice
         with open(parameters["uploads"]["plainTextResume"], "r", encoding="utf-8") as file:
             plain_text_resume = file.read()
-
-        style_manager = StyleManager()
-        available_styles = style_manager.get_styles()
-
-        if not available_styles:
-            logger.warning("No styles available. Proceeding without style selection.")
-        else:
-            # Present style choices to the user
-            choices = style_manager.format_choices(available_styles)
-            questions = [
-                inquirer.List(
-                    "style",
-                    message="Select a style for the resume:",
-                    choices=choices,
-                )
-            ]
-            style_answer = inquirer.prompt(questions)
-            if style_answer and "style" in style_answer:
-                selected_choice = style_answer["style"]
-                for style_name, (file_name, author_link) in available_styles.items():
-                    if selected_choice.startswith(style_name):
-                        style_manager.set_selected_style(style_name)
-                        logger.info(f"Selected style: {style_name}")
-                        break
-            else:
-                logger.warning("No style selected. Proceeding with default style.")
+        style_manager = get_styles()
         questions = [
     inquirer.Text('job_url', message="Please enter the URL of the job description:")
         ]
@@ -309,37 +318,6 @@ def create_cover_letter(parameters: dict, llm_api_key: str):
         logger.exception(f"An error occurred while creating the CV: {e}")
         raise
 
-def get_styles():
-    """
-    User selects style or default
-    Returns style to use
-    """
-    style_manager = StyleManager()
-    available_styles = style_manager.get_styles()
-
-    if not available_styles:
-        logger.warning("No styles available. Proceeding without style selection.")
-    else:
-        # Present style choices to the user
-        choices = style_manager.format_choices(available_styles)
-        questions = [
-            inquirer.List(
-                "style",
-                message="Select a style for the resume:",
-                choices=choices,
-            )
-        ]
-        style_answer = inquirer.prompt(questions)
-        if style_answer and "style" in style_answer:
-            selected_choice = style_answer["style"]
-            for style_name, (file_name, author_link) in available_styles.items():
-                if selected_choice.startswith(style_name):
-                    style_manager.set_selected_style(style_name)
-                    logger.info(f"Selected style: {style_name}")
-                    break
-        else:
-            logger.warning("No style selected. Proceeding with default style.")
-    return style_manager
 
 def create_resume_pdf_job_tailored(parameters: dict, llm_api_key: str):
     """
